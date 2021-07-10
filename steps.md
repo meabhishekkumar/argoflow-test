@@ -1,3 +1,21 @@
+### GKE Setup
+
+```bash
+gcloud container clusters create ak-argoflow \
+ --enable-autoscaling \
+ --num-nodes 2 \
+ --min-nodes 2 \
+ --max-nodes 10 \
+ --zone us-central1-c \
+ --machine-type=custom-8-12288
+
+
+# add metrics
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml
+kubectl patch deployment metrics-server -n kube-system -p '{"spec":{"template":{"spec":{"containers":[{"name":"metrics-server","args":["--cert-dir=/tmp", "--secure-port=4443", "--kubelet-insecure-tls","--kubelet-preferred-address-types=InternalIP"]}]}}}}'
+
+```
+
 ```bash
 ## create cluster
 kind create cluster --config kind/kind-cluster.yaml
@@ -11,8 +29,11 @@ kustomize build metallb/ | kubectl apply -f -
 kustomize build argocd/ | kubectl apply -f -
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+kubectl apply -f kubeflow.yaml
 
 ```
+
+### Extra
 
 https://magmax.org/en/blog/argocd/
 
