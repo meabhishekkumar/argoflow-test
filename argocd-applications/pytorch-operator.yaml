@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/meabhishekkumar/argoflow-test.git
-    targetRevision: v0.1.0
+    targetRevision: HEAD
     path: kubeflow/operators/pytorch
     kustomize:
       version: v4.0.5
